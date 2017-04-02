@@ -1,59 +1,28 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Created by Damindu on 3/18/2017.
  */
-public class Car
+public class Car extends Sprite
 {
-    private String ID;
-    private int x;
-    private int y;
+    Vector2 position;
 
-    public Car(String ID,int x, int y){
-        this.ID = ID;
-        this.x = x;
-        this.y = y;
-
+    public Car(Texture texture){
+        super(texture);
+        position = new Vector2(getX(),getY());
     }
 
-    public String getID() {
-        return ID;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void click(int cordinate){
-        switch (cordinate){
-            case 1:
-                y+=5;
-            case 2:
-                x+=5;
-            case 3:
-                y-=5;
-            case 4:
-                x-=5;
-                default:
-
+    public boolean hasMoved(){
+        if (position.x!=getX()||position.y!=getY()){
+            position.x = getX();
+            position.y = getY();
+            return true;
         }
-
+        return false;
     }
 
 

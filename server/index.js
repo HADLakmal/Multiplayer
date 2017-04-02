@@ -13,7 +13,7 @@ io.on('connection', function(socket){
 	console.log("Player Connected!");
 	socket.emit('socketID',{id: socket.id});
 	socket.broadcast.emit('newPlayer',{id: socket.id});
-	players.push(new Player(socket.id,0,0));
+	players.push(new player(socket.id,0,0));
 	socket.on('disconnect', function(){
 		console.log("Player Disconnected");
 		

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,15 +22,30 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 	Texture img;
 	private Socket socket;
 	private Car car;
+	Texture player;
+	Texture enemyPlayer;
 
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		img = new Texture("stone.jpg");
+		player = new Texture("Tank1.png");
+		enemyPlayer = new Texture("Tank2.png");
+
 		connect();
 		identfySocketEvent();
-		car = new Car(null,0,0);
+	}
+
+	public void handleInput(float t){
+
+		if (car!=null){
+			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+				car.setPosition(car.getX()+(-200*t),car.getY());
+			}else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+				car.setPosition(car.getX()+(200*t),car.getY());
+			}
+		}
 	}
 
 	@Override
@@ -38,13 +54,15 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, 0, 0);
+		handleInput(Gdx.graphics.getDeltaTime());
+		if (car!=null) car.draw(batch);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		player.dispose();
+		enemyPlayer.dispose();
 	}
 	public void connect(){
 		try {
@@ -63,6 +81,7 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 			public void call(Object... args) {
 				//log into the console
 				Gdx.app.log("SocketIO", "Connected");
+				car = new Car(player);
 
 			}
 		}).on("socketID", new Emitter.Listener() {
