@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -24,6 +25,7 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 	private Car car;
 	Texture player;
 	Texture enemyPlayer;
+	HashMap<String,Car> map;
 
 	
 	@Override
@@ -32,6 +34,8 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 		img = new Texture("stone.jpg");
 		player = new Texture("Tank1.png");
 		enemyPlayer = new Texture("Tank2.png");
+		map = new HashMap<String, Car>();
+
 
 		connect();
 		identfySocketEvent();
@@ -56,6 +60,9 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 		batch.draw(img, 0, 0);
 		handleInput(Gdx.graphics.getDeltaTime());
 		if (car!=null) car.draw(batch);
+		for (HashMap.Entry<String,Car> entry:map.entrySet()){
+			entry.getValue().draw(batch);
+		}
 		batch.end();
 	}
 	
@@ -101,7 +108,8 @@ public class Multiplayer extends ApplicationAdapter implements KeyListener {
 				JSONObject jdata = (JSONObject) args[0];
 				try {
 					String id = jdata.getString("id");
-					Gdx.app.log("SocketIO", "My ID :" + id);
+					Gdx.app.log("SocketIO", "new player ID :" + id);
+					map.put(id, new Car(enemyPlayer));
 				} catch (JSONException e) {
 					Gdx.app.log("SocketIO","Error");
 				}
